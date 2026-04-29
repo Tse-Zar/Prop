@@ -2,7 +2,7 @@
 // made by Tsezar
 
 
-#include "lib/crypto.h"
+#include "../lib/crypto.h"
 #include <string.h>
 
 #define ROTR(x,n) (((x) >> (n)) | ((x) << (32 - (n))))

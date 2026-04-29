@@ -1,8 +1,8 @@
 // сделано Цезарем
 // made by Tsezar
 
-#include "lib/storage.h"
-#include "lib/crypto.h"
+#include "../lib/storage.h"
+#include "../lib/crypto.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

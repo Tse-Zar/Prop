@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "lib/password_manager.h"
-#include "lib/ui.h"
+#include "../lib/password_manager.h"
+#include "../lib/ui.h"
 
 int main(void) {
     srand((unsigned)time(NULL));

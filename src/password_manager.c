@@ -1,7 +1,7 @@
 // сделано Цезарем
 // made by Tsezar
 
-#include "lib/password_manager.h"
+#include "../lib/password_manager.h"
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>

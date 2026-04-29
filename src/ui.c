@@ -1,28 +1,16 @@
 // сделано Цезарем
 // made by Tsezar
 
-#include "lib/ui.h"
+#include "../lib/ui.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 
-#include "lib/raylib.h"
+#include "../lib/raylib.h"
 #define RAYGUI_IMPLEMENTATION
-#include "lib/raygui.h"
-#include "raygui-4.0/styles/dark/style_dark.h"
-#include "lib/storage.h"
-
-/* To embed a font directly into the binary:
-   1. Place any .ttf file (e.g. JetBrainsMono-Regular.ttf) in the project root
-   2. Rename it to font.ttf
-   3. Run: python tools/embed_font.py
-   4. Rebuild.  If font_embedded.h exists, it will be used automatically. */
-#if defined(__has_include)
-    #if __has_include("font_embedded.h")
-        #include "font_embedded.h"
-        #define USE_EMBEDDED_FONT
-    #endif
-#endif
+#include "../lib/raygui.h"
+#include "../styles/dark/style_dark.h"
+#include "../lib/storage.h"
 
 #define SCREEN_W 800
 #define SCREEN_H 600
@@ -30,26 +18,12 @@
 static Font g_customFont = {0};
 
 void ui_init(void) {
-    InitWindow(SCREEN_W, SCREEN_H, "Password Manager");
+    InitWindow(SCREEN_W, SCREEN_H, "Password Manager v1 - pineapple");
     SetTargetFPS(60);
     GuiLoadStyleDark();
 
-    bool fontLoaded = false;
-
-#ifdef USE_EMBEDDED_FONT
-    g_customFont = LoadFontFromMemory(".ttf", font_ttf_data, FONT_TTF_SIZE, 20, NULL, 0);
-    if (g_customFont.texture.id != 0) fontLoaded = true;
-#endif
-
-    if (!fontLoaded && FileExists("font.ttf")) {
-        g_customFont = LoadFontEx("font.ttf", 20, NULL, 0);
-        if (g_customFont.texture.id != 0) fontLoaded = true;
-    }
-
-    if (fontLoaded) {
-        GuiSetFont(g_customFont);
-        GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
-    }
+    GuiSetFont(g_customFont);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
 }
 
 void ui_run(PasswordStore *store) {
@@ -81,7 +55,6 @@ void ui_run(PasswordStore *store) {
     Rectangle recMaster  = {150, 425, 220, 25};
 
     while (!WindowShouldClose()) {
-        /* --- handle text-box focus --- */
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             Vector2 mouse = GetMousePosition();
             if (CheckCollisionPointRec(mouse, recService)) {
@@ -99,7 +72,6 @@ void ui_run(PasswordStore *store) {
         BeginDrawing();
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-        /* --- Generator Panel --- */
         GuiPanel((Rectangle){ 10, 10, 380, 580 }, "Generator");
 
         GuiLabel((Rectangle){ 30, 50, 100, 25 }, "Service:");
@@ -166,7 +138,6 @@ void ui_run(PasswordStore *store) {
             if (GetTime() - vaultStatusTime > 2.0) showVaultStatus = false;
         }
 
-        /* --- Manager Panel --- */
         GuiPanel((Rectangle){ 410, 10, 380, 580 }, "Saved Passwords");
 
         int count = pm_get_count(store);

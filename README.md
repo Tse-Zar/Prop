@@ -19,21 +19,21 @@ Cross-platform password generator and manager with graphical UI built in C using
 
 ```
 .
-├── main.c                 # Entry point
-├── password_manager.h     # Data structures and API
-├── password_manager.c     # Generator and in-memory storage logic
-├── crypto.h               # SHA-256 + ChaCha20 declarations
-├── crypto.c               # Encryption primitives (pure C, no deps)
-├── storage.h              # Encrypted vault save/load declarations
-├── storage.c              # Vault file I/O with ChaCha20 encryption
-├── ui.h                   # UI module interface
-├── ui.c                   # raygui-based GUI implementation
-├── tools/
-│   └── embed_font.py      # Converts font.ttf → font_embedded.h
-├── font_embedded.h        # Generated embedded font (optional)
-├── raylib.h               # raylib header
-├── raygui.h               # raygui header
-├── raygui-4.0/            # Style themes (dark, terminal, cyber, etc.)
+├── src/
+│   ├── main.c                 # Entry point
+│   ├── ui.c                   # raygui-based GUI implementation
+│   ├── password_manager.c     # Generator and in-memory storage logic
+│   ├── crypto.c               # Encryption primitives (pure C, no deps)
+│   └── storage.c              # Vault file I/O with ChaCha20 encryption
+├── lib/
+│   ├── ui.h                   # UI module interface
+│   ├── password_manager.h     # Data structures and API
+│   ├── crypto.h               # SHA-256 + ChaCha20 declarations
+│   ├── storage.h              # Encrypted vault save/load declarations
+│   ├── raylib.h               # raylib header
+│   └── raygui.h               # raygui header
+├── font_embedded.h            # Generated embedded font (optional)
+├── styles/                    # raygui themes (dark, terminal, cyber, etc.)
 └── libraylib.a / raylib.lib   # Compiled raylib library
 ```
 
@@ -44,7 +44,7 @@ Cross-platform password generator and manager with graphical UI built in C using
 ### Windows (MinGW / MSYS2 UCRT64)
 
 ```bash
-gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr.exe -mwindows -L. -lraylib -lopengl32 -lgdi32 -lwinmm
+gcc src/main.c src/password_manager.c src/ui.c src/crypto.c src/storage.c -Ilib -o passmgr.exe -mwindows -L. -lraylib -lopengl32 -lgdi32 -lwinmm
 ```
 
 `-mwindows` hides the console window.
@@ -52,13 +52,13 @@ gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr.exe -mwindows -
 ### Linux
 
 ```bash
-gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr -lraylib -lm -lpthread -ldl -lrt -lX11
+gcc src/main.c src/password_manager.c src/ui.c src/crypto.c src/storage.c -Ilib -o passmgr -lraylib -lm -lpthread -ldl -lrt -lX11
 ```
 
 ### macOS
 
 ```bash
-gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr -lraylib -framework OpenGL -framework Cocoa -framework IOKit
+gcc src/main.c src/password_manager.c src/ui.c src/crypto.c src/storage.c -Ilib -o passmgr -lraylib -framework OpenGL -framework Cocoa -framework IOKit
 ```
 
 ---
@@ -68,7 +68,7 @@ gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr -lraylib -frame
 - [raylib](https://github.com/raysan5/raylib) — graphics/window/input library
 - [raygui](https://github.com/raysan5/raygui) — immediate-mode GUI for raylib
 
-Place `raylib.h`, `raygui.h` and the compiled library (`libraylib.a` / `raylib.lib`) next to the source files.
+Place `raylib.h`, `raygui.h` and the compiled library (`libraylib.a` / `raylib.lib`) in the `lib/` folder.
 
 ---
 
@@ -89,48 +89,21 @@ Place `raylib.h`, `raygui.h` and the compiled library (`libraylib.a` / `raylib.l
 
 ## Changing Theme
 
-Edit `ui.c`:
+Edit `src/ui.c`:
 
 ```c
-#include "raygui-4.0/styles/dark/style_dark.h"
+#include "styles/dark/style_dark.h"
 // ...
 GuiLoadStyleDark();
 ```
 
-Available themes in `raygui-4.0/styles/`:
+Available themes in `styles/`:
 - `dark` — dark modern
 - `terminal` — green hacker-style
 - `cyber` — cyberpunk
 - `cherry` — red accent
 - `jungle` — green accent
 - `lavanda` — purple accent
-
----
-
-## Custom Font
-
-By default the app uses the theme's built-in pixel font. For a cleaner look you have two options:
-
-### Option A: External `font.ttf` (quick)
-
-Place any **`.ttf` file named `font.ttf`** next to the executable. The app will load it automatically at size 20.
-
-```bash
-# Example: download JetBrains Mono
-curl -L -o font.ttf "https://github.com/JetBrains/JetBrainsMono/raw/master/fonts/ttf/JetBrainsMono-Regular.ttf"
-```
-
-### Option B: Embed font into the binary (no external file)
-
-1. Download a `.ttf` font (e.g. **Consolas**, **JetBrains Mono**, **Cascadia Code**)
-2. Rename it to `font.ttf` and place in the project root
-3. Run the embed script:
-```bash
-python tools/embed_font.py
-```
-4. Rebuild — the font is now compiled directly into the executable
-
-Recommended fonts: [JetBrains Mono](https://www.jetbrains.com/lp/mono/), [Cascadia Code](https://github.com/microsoft/cascadia-code), [Fira Code](https://github.com/tonsky/FiraCode).
 
 ---
 
@@ -159,21 +132,21 @@ Recommended fonts: [JetBrains Mono](https://www.jetbrains.com/lp/mono/), [Cascad
 
 ```
 .
-├── main.c                 # Точка входа
-├── password_manager.h     # Структуры данных и API
-├── password_manager.c     # Логика генерации и хранения в памяти
-├── crypto.h               # Объявления SHA-256 + ChaCha20
-├── crypto.c               # Криптографические примитивы (чистый C, без зависимостей)
-├── storage.h              # Объявления сохранения/загрузки хранилища
-├── storage.c              # Файловый ввод-вывод с шифрованием ChaCha20
-├── ui.h                   # Интерфейс модуля UI
-├── ui.c                   # GUI на raygui
-├── tools/
-│   └── embed_font.py      # Конвертация font.ttf → font_embedded.h
-├── font_embedded.h        # Сгенерированный встроенный шрифт (опционально)
-├── raylib.h               # Заголовок raylib
-├── raygui.h               # Заголовок raygui
-├── raygui-4.0/            # Темы оформления (dark, terminal, cyber и др.)
+├── src/
+│   ├── main.c                 # Точка входа
+│   ├── ui.c                   # GUI на raygui
+│   ├── password_manager.c     # Логика генерации и хранения в памяти
+│   ├── crypto.c               # Криптографические примитивы (чистый C, без зависимостей)
+│   └── storage.c              # Файловый ввод-вывод с шифрованием ChaCha20
+├── lib/
+│   ├── ui.h                   # Интерфейс модуля UI
+│   ├── password_manager.h     # Структуры данных и API
+│   ├── crypto.h               # Объявления SHA-256 + ChaCha20
+│   ├── storage.h              # Объявления сохранения/загрузки хранилища
+│   ├── raylib.h               # Заголовок raylib
+│   └── raygui.h               # Заголовок raygui
+├── font_embedded.h            # Сгенерированный встроенный шрифт (опционально)
+├── styles/                    # Темы оформления raygui (dark, terminal, cyber и др.)
 └── libraylib.a / raylib.lib   # Скомпилированная библиотека raylib
 ```
 
@@ -184,7 +157,7 @@ Recommended fonts: [JetBrains Mono](https://www.jetbrains.com/lp/mono/), [Cascad
 ### Windows (MinGW / MSYS2 UCRT64)
 
 ```bash
-gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr.exe -mwindows -L. -lraylib -lopengl32 -lgdi32 -lwinmm
+gcc src/main.c src/password_manager.c src/ui.c src/crypto.c src/storage.c -Ilib -o passmgr.exe -mwindows -L. -lraylib -lopengl32 -lgdi32 -lwinmm
 ```
 
 `-mwindows` скрывает консольное окно.
@@ -192,13 +165,13 @@ gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr.exe -mwindows -
 ### Linux
 
 ```bash
-gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr -lraylib -lm -lpthread -ldl -lrt -lX11
+gcc src/main.c src/password_manager.c src/ui.c src/crypto.c src/storage.c -Ilib -o passmgr -lraylib -lm -lpthread -ldl -lrt -lX11
 ```
 
 ### macOS
 
 ```bash
-gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr -lraylib -framework OpenGL -framework Cocoa -framework IOKit
+gcc src/main.c src/password_manager.c src/ui.c src/crypto.c src/storage.c -Ilib -o passmgr -lraylib -framework OpenGL -framework Cocoa -framework IOKit
 ```
 
 ---
@@ -208,7 +181,7 @@ gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr -lraylib -frame
 - [raylib](https://github.com/raysan5/raylib) — библиотека графики, окон и ввода
 - [raygui](https://github.com/raysan5/raygui) — GUI для raylib
 
-Положите `raylib.h`, `raygui.h` и скомпилированную библиотеку (`libraylib.a` / `raylib.lib`) рядом с исходными файлами.
+Положите `raylib.h`, `raygui.h` и скомпилированную библиотеку (`libraylib.a` / `raylib.lib`) в папку `lib/`.
 
 ---
 
@@ -229,15 +202,15 @@ gcc main.c password_manager.c ui.c crypto.c storage.c -o passmgr -lraylib -frame
 
 ## Смена темы
 
-Отредактируйте `ui.c`:
+Отредактируйте `src/ui.c`:
 
 ```c
-#include "raygui-4.0/styles/dark/style_dark.h"
+#include "styles/dark/style_dark.h"
 // ...
 GuiLoadStyleDark();
 ```
 
-Доступные темы в `raygui-4.0/styles/`:
+Доступные темы в `styles/`:
 - `dark` — тёмная современная
 - `terminal` — зелёный хакерский стиль
 - `cyber` — киберпанк
@@ -246,30 +219,4 @@ GuiLoadStyleDark();
 - `lavanda` — фиолетовые акценты
 
 ---
-
-## Свой шрифт
-
-По умолчанию используется встроенный пиксельный шрифт темы. Для более современного вида есть два варианта:
-
-### Вариант A: Внешний `font.ttf` (быстро)
-
-Положите файл **`font.ttf`** рядом с исполняемым файлом — программа загрузит его автоматически (размер 20).
-
-```bash
-# Пример: скачать JetBrains Mono
-curl -L -o font.ttf "https://github.com/JetBrains/JetBrainsMono/raw/master/fonts/ttf/JetBrainsMono-Regular.ttf"
-```
-
-### Вариант B: Встроить шрифт в бинарник (без внешнего файла)
-
-1. Скачайте `.ttf` шрифт (например, **Consolas**, **JetBrains Mono**, **Cascadia Code**)
-2. Переименуйте в `font.ttf` и положите в корень проекта
-3. Запустите скрипт:
-```bash
-python tools/embed_font.py
-```
-4. Пересоберите — шрифт теперь скомпилирован прямо в исполняемый файл
-
-Рекомендуемые шрифты: [JetBrains Mono](https://www.jetbrains.com/lp/mono/), [Cascadia Code](https://github.com/microsoft/cascadia-code), [Fira Code](https://github.com/tonsky/FiraCode).
-
 
