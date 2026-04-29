@@ -11,7 +11,6 @@ Cross-platform password generator and manager with graphical UI built in C using
 - **Encrypted Vault** — save/load all passwords to a file encrypted with **ChaCha20** + **SHA-256** key derivation
 - **Cross-platform** — works on Windows, Linux, macOS
 - **Styled UI** — built-in dark theme with custom pixel font
-- **Single executable** — console-free window on Windows
 
 ---
 
@@ -124,7 +123,6 @@ Available themes in `styles/`:
 - **Зашифрованное хранилище** — сохранение и загрузка всех паролей в файл, зашифрованный алгоритмом **ChaCha20** с ключом, полученным через **SHA-256**
 - **Кроссплатформенность** — работает на Windows, Linux, macOS
 - **Стилизованный интерфейс** — встроенная тёмная тема с пиксельным шрифтом
-- **Один исполняемый файл** — без консольного окна на Windows
 
 ---
 
